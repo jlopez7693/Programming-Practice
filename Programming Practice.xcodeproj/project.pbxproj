@@ -41,7 +41,7 @@
 		820AA9E52BCC743000A90BA0 = {
 			isa = PBXGroup;
 			children = (
-				820AA9F02BCC743000A90BA0 /* Programming Practice */,
+				820AA9F02BCC743000A90BA0 /* Simple Calculator */,
 				820AA9EF2BCC743000A90BA0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,12 +54,12 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		820AA9F02BCC743000A90BA0 /* Programming Practice */ = {
+		820AA9F02BCC743000A90BA0 /* Simple Calculator */ = {
 			isa = PBXGroup;
 			children = (
 				820AA9F12BCC743000A90BA0 /* main.cpp */,
 			);
-			path = "Programming Practice";
+			path = "Simple Calculator";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
