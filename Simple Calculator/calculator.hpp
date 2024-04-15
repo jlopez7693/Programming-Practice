@@ -23,7 +23,14 @@ class Calculator
     };
 
     typedef std::stack<double> *OperandStack;
+
     typedef std::stack<std::pair<std::stack<double> *, Operator>> ExpressionStack;
+
+    void initialize();
+
+    void handleOperand(double operand);
+
+    double evaluateOperands();
 
     OperandStack operands;
     ExpressionStack expressions;

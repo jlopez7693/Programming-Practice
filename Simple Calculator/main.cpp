@@ -3,7 +3,7 @@
 
 int main(int argc, const char *argv[])
 {
-    std::string expression = "2 / (2 + 3)";
+    std::string expression = "(2 + 2 / 4)";
     std::cout << "The expression to calculate: " << expression << std::endl;
 
     double answer = Calculator().calculate(expression);

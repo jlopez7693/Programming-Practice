@@ -1,13 +1,25 @@
 #include "calculator.hpp"
 
-Calculator::Calculator() : operands(nullptr), expressions(), currOp(ADDITION) {};
+Calculator::Calculator() : operands(nullptr), expressions(), currOp(ADDITION)
+{
+}
 
-Calculator::~Calculator() {};
+Calculator::~Calculator()
+{
+    if (this->operands)
+    {
+        delete this->operands;
+    }
+    while (!this->expressions.empty())
+    {
+        delete this->expressions.top().first;
+        this->expressions.pop();
+    }
+}
 
 double Calculator::calculate(std::string s)
 {
-    this->operands = new std::stack<double>;
-    Operator currOp = ADDITION;
+    this->initialize();
 
     for (int i = 0; i < s.size(); i++)
     {
@@ -23,98 +35,88 @@ double Calculator::calculate(std::string s)
             }
             i--;
 
-            if (currOp == ADDITION)
-            {
-                this->operands->push(num);
-            }
-            else if (currOp == SUBTRACTION)
-            {
-                this->operands->push(-1 * num);
-            }
-            else if (currOp == MULTIPLICATION)
-            {
-                double lhs = this->operands->top();
-                this->operands->pop();
-                this->operands->push(lhs * num);
-            }
-            else if (currOp == DIVISION)
-            {
-                // TODO: Handle division by zero more gracefully
-                double lhs = this->operands->top();
-                this->operands->pop();
-                this->operands->push(lhs / num);
-            }
-
-            currOp = ADDITION;
+            this->handleOperand(num);
         }
         else
         {
             if (ch == '-')
             {
-                currOp = SUBTRACTION;
+                this->currOp = SUBTRACTION;
             }
             else if (ch == '*')
             {
-                currOp = MULTIPLICATION;
+                this->currOp = MULTIPLICATION;
             }
             else if (ch == '/')
             {
-                currOp = DIVISION;
+                this->currOp = DIVISION;
             }
             else if (ch == '(')
             {
                 this->expressions.push(std::make_pair(this->operands, currOp));
-                this->operands = new std::stack<double>;
-                currOp = ADDITION;
+                this->initialize();
             }
             else if (ch == ')')
             {
-                double num = 0.0;
-                while (!this->operands->empty())
-                {
-                    num += this->operands->top();
-                    this->operands->pop();
-                }
-                delete this->operands;
+                double num = this->evaluateOperands();
 
                 this->operands = this->expressions.top().first;
-                currOp = this->expressions.top().second;
+                this->currOp = this->expressions.top().second;
                 this->expressions.pop();
 
-                if (currOp == ADDITION)
-                {
-                    this->operands->push(num);
-                }
-                else if (currOp == SUBTRACTION)
-                {
-                    this->operands->push(-1 * num);
-                }
-                else if (currOp == MULTIPLICATION)
-                {
-                    double lhs = this->operands->top();
-                    this->operands->pop();
-                    this->operands->push(lhs * num);
-                }
-                else if (currOp == DIVISION)
-                {
-                    // TODO: Handle division by zero more gracefully
-                    double lhs = this->operands->top();
-                    this->operands->pop();
-                    this->operands->push(lhs / num);
-                }
-
-                currOp = ADDITION;
+                this->handleOperand(num);
             }
         }
     }
 
-    double answer = 0.0;
+    double answer = this->evaluateOperands();
+    return answer;
+}
+
+void Calculator::initialize()
+{
+    this->operands = new std::stack<double>;
+    this->currOp = ADDITION;
+}
+
+void Calculator::handleOperand(double operand)
+{
+    if (this->currOp == ADDITION)
+    {
+        this->operands->push(operand);
+    }
+    else if (this->currOp == SUBTRACTION)
+    {
+        this->operands->push(-1 * operand);
+    }
+    else if (this->currOp == MULTIPLICATION)
+    {
+        double lhs = this->operands->top();
+        this->operands->pop();
+        this->operands->push(lhs * operand);
+    }
+    else if (this->currOp == DIVISION)
+    {
+        // TODO: Handle division by zero more gracefully
+        double lhs = this->operands->top();
+        this->operands->pop();
+        this->operands->push(lhs / operand);
+    }
+
+    this->currOp = ADDITION;
+}
+
+double Calculator::evaluateOperands()
+{
+    double retVal = 0.0;
     while (!this->operands->empty())
     {
-        answer += this->operands->top();
+        retVal += this->operands->top();
         this->operands->pop();
     }
-    delete this->operands;
 
-    return answer;
+    delete this->operands;
+    this->operands = nullptr;
+
+    return retVal;
 }
