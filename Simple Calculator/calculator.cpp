@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "calculator.hpp"
 
 Calculator::Calculator() : operands(nullptr), expressions(), currOp(ADDITION)
@@ -6,15 +7,7 @@ Calculator::Calculator() : operands(nullptr), expressions(), currOp(ADDITION)
 
 Calculator::~Calculator()
 {
-    if (this->operands)
-    {
-        delete this->operands;
-    }
-    while (!this->expressions.empty())
-    {
-        delete this->expressions.top().first;
-        this->expressions.pop();
-    }
+    this->deinitialize();
 }
 
 double Calculator::calculate(std::string s)
@@ -79,6 +72,20 @@ void Calculator::initialize()
     this->currOp = ADDITION;
 }
 
+void Calculator::deinitialize()
+{
+    if (this->operands)
+    {
+        delete this->operands;
+        this->operands = nullptr;
+    }
+    while (!this->expressions.empty())
+    {
+        delete this->expressions.top().first;
+        this->expressions.pop();
+    }
+}
+
 void Calculator::handleOperand(double operand)
 {
     if (this->currOp == ADDITION)
@@ -97,7 +104,12 @@ void Calculator::handleOperand(double operand)
     }
     else if (this->currOp == DIVISION)
     {
-        // TODO: Handle division by zero more gracefully
+        if (std::abs(operand) < epsilon)
+        {
+            this->deinitialize();
+            throw std::runtime_error("Error: Division by zero");
+        }
+
         double lhs = this->operands->top();
         this->operands->pop();
         this->operands->push(lhs / operand);

@@ -26,7 +26,11 @@ class Calculator
 
     typedef std::stack<std::pair<std::stack<double> *, Operator>> ExpressionStack;
 
+    static constexpr double epsilon = 1e-10;
+
     void initialize();
+
+    void deinitialize();
 
     void handleOperand(double operand);
 
