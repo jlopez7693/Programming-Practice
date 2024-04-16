@@ -3,20 +3,38 @@
 
 int main(int argc, const char *argv[])
 {
-    std::string expression = "2 / (2 * 3 - 6)";
-    std::cout << "The expression to calculate: " << expression << std::endl;
+    Calculator calculator;
+    bool isRunning = true;
 
-    double answer = 0.0;
-    try
+    std::cout << "Welcome to the calculator! Type \"exit\" to terminate the calculator." << std::endl;
+
+    while (isRunning)
     {
-        answer = Calculator().calculate(expression);
-    }
-    catch (const std::runtime_error &e)
-    {
-        std::cout << e.what() << std::endl;
-        return 1;
+        std::cout << "\nPlease enter the expression to calculate: ";
+        std::string expression = "";
+        std::getline(std::cin, expression);
+
+        if (expression == "exit")
+        {
+            isRunning = false;
+        }
+        else
+        {
+            double calculation = 0.0;
+            try
+            {
+                calculation = calculator.calculate(expression);
+            }
+            catch (const std::runtime_error &e)
+            {
+                std::cout << e.what() << std::endl;
+                continue;
+            }
+
+            std::cout << "The calculated result was " << calculation << std::endl;
+        }
     }
 
-    std::cout << "The calculated result was " << answer << std::endl;
+    std::cout << "Thank you for using the calculator! Good day!\n" << std::endl;
     return 0;
 }
